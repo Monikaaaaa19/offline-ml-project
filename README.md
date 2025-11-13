@@ -1,112 +1,195 @@
-# Offline-First Agricultural ML Server
+🌱 Robust Offline Smart Agriculture System Using ESP32 & Machine Learning
 
-This project is a complete, 100% offline-capable system that runs on a laptop to provide agricultural recommendations. It is designed to receive sensor data (e.g., from an ESP32) and run local ML models to generate predictions.
+This project is a fully offline, real-time smart agriculture system that reads live sensor data from an ESP32, performs machine learning predictions, generates fertilizer recommendations, raises disease alerts, and displays everything in a clean React web dashboard — all without internet.
 
-## Features
+It is designed for remote agricultural areas where network connectivity is poor or unavailable.
 
-- **100% Offline-Capable:** All models, maps, and logic run locally. No internet is needed after setup.
-- **Crop Prediction:** A `RandomForestClassifier` trained on 7 sensor features.
-- **Smart Fertilizer Model:** An ML classifier that reads N, P, and K values to provide "smart" recommendations (e.g., "DAP") based on the patterns in your dataset.
-- **Offline State Lookup:** The server **automatically detects the state name** (e.g., "Karnataka") from the (Lat, Lon) coordinates you provide.
-- **Offline Map Generation:** The "History" tab generates a 100% offline map plot showing the entire country of India, with the specific state highlighted in orange and the prediction point marked in red.
-- **React Frontend:** A user-friendly web UI that remembers your form data between tabs.
-- **ESP32 Ingest:** A Python script that auto-detects a connected ESP32, listens for its JSON data, and posts it to the server.
+⸻
 
----
+🚀 Features
 
-## 1. Required Setup (One-Time Only)
+✔️ Real-time ESP32 Sensor Feed (USB Serial → WebSocket)
+• Reads NPK, pH, temperature, humidity, soil moisture, rainfall, latitude, longitude
+• Data flows automatically into the web app
+• Smooth live UI with animated metric tiles
 
-Before running, you must install dependencies and download one critical map file.
+✔️ Offline ML Prediction
+• Predicts the best crop to grow
+• Shows confidence percentage
+• Provides fertilizer recommendations
+• Generates disease alerts based on conditions
+• Works 100% offline — no cloud API needed
 
-### Step 1.1: Install Python & System Dependencies
+✔️ Manual Input Mode
+• Enter sensor values manually when ESP32 is not connected
 
-1.  **Activate your environment**:
-    ```bash
-    source venv/bin/activate
-    ```
-2.  **Install Python Libraries**:
-    ```bash
-    pip install -r requirements.txt
-    pip install geopandas fiona pyproj pyserial requests
-    ```
-    _(Note: `geopandas` and its dependencies are needed for the state lookup and offline map.)_
+✔️ History Tracking
+• Every prediction is saved in a local JSON “database”
+• Includes timestamp, sensor values, crop result, fertilizer & disease alerts
+• Generates offline map images showing user’s state in India
 
-### Step 1.2: Install Frontend Dependencies
+✔️ Offline Map Generation
+• No Google Maps / API keys required
+• Uses GeoPandas + Matplotlib to draw India map and highlight exact state
 
-1.  **Navigate to the frontend**:
-    ```bash
-    cd frontend
-    ```
-2.  **Install Node libraries**:
-    ```bash
-    npm install
-    ```
-3.  **Go back to the root folder**:
-    ```bash
-    cd ..
-    ```
+✔️ Clean, Professional UI
+• Live Feed at the top
+• Manual input below
+• Beautiful History viewer
+• Smooth animations & consistent look
 
-### Step 1.3: Download the State Boundary File (CRITICAL)
+⸻
 
-The server **cannot** find the state name or draw the map without this file.
+🧩 System Architecture
 
-1.  **Download the GeoJSON file** and save it in your `data` folder.
-    ```bash
-    curl -L -o data/india_states.geojson "[https://github.com/Subhash9325/GeoJson-Data-of-Indian-States/raw/master/Indian_States](https://github.com/Subhash9325/GeoJson-Data-of-Indian-States/raw/master/Indian_States)"
-    ```
+ESP32 (USB Serial)
+|
+scripts/ingest_from_esp32.py
+| (parses JSON / k=v)
+v
+FastAPI Backend ← ML models (RandomForest + Scaler + LabelEncoder)
+|
+WebSocket broadcast for live data
+|
+React Frontend (LiveFeed + Manual + History)
+|
+Local JSON DB (History)
 
----
+Everything stays local — nothing leaves your device.
 
-## 2. How to Run The Project
+⸻
 
-You must run **two** servers in **two separate terminals**.
+📡 Components Overview
 
-### Terminal 1: Run the Backend (FastAPI) Server
+1. ESP32
 
-1.  **Activate the environment**:
-    ```bash
-    source venv/bin/activate
-    ```
-2.  **Train the Models**: You must run this command to create the "smart" fertilizer model.
-    ```bash
-    python train_crop_model.py --train-fertilizer-model
-    ```
-3.  **Run the Server**:
-    ```bash
-    uvicorn server.main:app --reload
-    ```
-    _Wait until you see `[INFO] Successfully loaded India state boundaries...` and `...Application startup complete.`_
+Reads sensor values every 2–3 seconds and prints JSON over serial.
+Example output:
 
-### Terminal 2: Run the Frontend (React) App
+{"N":30,"P":20,"K":80,"pH":6.5,"temp":26,"humidity":58,"soil":40,"rainfall":1.2,"lat":12.97,"lon":77.59}
 
-1.  **Navigate to the frontend**:
-    ```bash
-    cd frontend
-    ```
-2.  **Run the App**:
-    ```bash
-    npm start
-    ```
-    _This will automatically open `http://localhost:3000` in your browser._
+⸻
 
----
+2. Serial Ingestion Script
 
-## 3. How to Test (With ESP32)
+scripts/ingest_from_esp32.py
+• Detects the correct USB port
+• Reads ESP32 serial output
+• Converts to JSON
+• Sends to backend via WebSocket
+• Also supports simulation (--simulate) without hardware
 
-You can run a third terminal to simulate or connect to your ESP32.
+⸻
 
-### Terminal 3: Run the ESP32 Ingest Script
+3. FastAPI Backend
 
-1.  **Activate the environment**:
-    ```bash
-    source venv/bin/activate
-    ```
-2.  **To run the simulator** (sends one "fake" prediction):
-    ```bash
-    python scripts/ingest_from_esp32.py --simulate
-    ```
-3.  **To connect to your REAL ESP32** (plugged in via USB):
-    ```bash
-    python scripts/ingest_from_esp32.py
-    ```
-    _The script will auto-detect the port and start listening for JSON data._
+server/main.py
+• Loads machine learning models
+• Accepts ESP32 data via WebSocket /ws/esp32
+• Exposes /predict_crop for manual input & ESP32 predictions
+• Saves all predictions to db/predictions.json
+• Generates offline map PNGs /history_map/{id}.png
+
+⸻
+
+4. Machine Learning Models
+   • crop_model.joblib → RandomForest crop classifier
+   • scaler.joblib → Normalizes sensor inputs
+   • label_encoder.joblib → Converts model output → crop names
+   • fertilizer_recommender.py → Suggests fertilizer
+   • get_disease_alerts() → Adds disease warnings
+
+⸻
+
+5. React Frontend
+   • LiveFeed.jsx → Real-time sensor grid
+   • StartPrediction.js → Manual input + Predict
+   • History.js → Shows previous predictions + offline maps
+   • Clean UI with pill navigation tabs
+
+⸻
+
+🛠️ Setup Instructions
+
+1. Create and activate virtual environment
+
+python3 -m venv venv
+source venv/bin/activate
+
+2. Install backend dependencies
+
+pip install -r requirements.txt
+
+3. Start backend
+
+uvicorn server.main:app --reload
+
+4. Start frontend
+
+cd frontend
+npm install
+npm start
+
+5. Run ESP32 ingestion script
+
+python scripts/ingest_from_esp32.py
+
+Or run fake data:
+
+python scripts/ingest_from_esp32.py --simulate
+
+⸻
+
+🗂️ Project Folder Structure
+
+offline-ml-project/
+│
+├── server/
+│ ├── main.py
+│ ├── models_loader.py
+│ ├── utils.py
+│ ├── db_json.py
+│ └── ...
+│
+├── scripts/
+│ ├── ingest_from_esp32.py
+│ └── ws_test_send.py
+│
+├── models/
+│ ├── crop_model.joblib
+│ ├── scaler.joblib
+│ └── label_encoder.joblib
+│
+├── db/
+│ └── predictions.json
+│
+├── frontend/
+│ ├── src/
+│ │ ├── components/
+│ │ └── App.js
+│ └── App.css
+│
+└── data/
+└── india_states.geojson
+
+⸻
+
+📊 Prediction Output Example
+
+Predicted Crop: Rice
+Confidence: 92%
+Fertilizer: Apply NPK 30:20:20
+Disease Risk: Moderate (Check for leaf spot)
+State Detected: Karnataka
+Map: /history_map/173146312.png
+
+⸻
+
+💡 Why This Project Is Important
+• Works offline → perfect for rural farmers
+• Real-time sensor analysis
+• Data-driven crop decisions
+• Automatic fertilizer & disease warnings
+• Modern, professional UI
+• Offline GIS mapping
+• Fully open-source
