@@ -223,17 +223,6 @@ function StartPrediction(props) {
             </div>
 
             <div className="input-tile">
-              <div className="tile-label">🌱 Soil (%)</div>
-              <input
-                type="number"
-                value={""}
-                onChange={() => {}}
-                placeholder=""
-                className="tile-input"
-              />
-            </div>
-
-            <div className="input-tile">
               <div className="tile-label">🌧️ Rainfall</div>
               <input
                 type="number"

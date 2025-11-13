@@ -1,55 +1,103 @@
-/* frontend/src/App.css
-   UPDATED: Manual input tiles now match the Live ESP32 metric tile appearance
-   Keep the rest of your stylesheet as before (this file is the full App.css).
-*/
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root{
-  /* Visual tokens used across components */
-  --surface-color: #F7FAFC; /* pale bluish surface used by live metric tiles */
+  --surface-color: #F7FAFC;
   --card-color: #FFFFFF;
   --border-color: #E6EEF5;
   --text-color: #243B53;
   --subtle-text-color: #6B7C93;
   --primary-color: #2F80ED;
-  --shadow: 0 6px 24px rgba(0,0,0,0.06);
+  --accent: #007aff;
+  --success: #27AE60;
+  --danger: #E74C3C;
   --radius-card: 12px;
+  --shadow-strong: 0 8px 32px rgba(136,152,170,0.12);
+  --shadow-soft: 0 6px 24px rgba(0,0,0,0.06);
 }
 
-/* --- Base --- */
+/* ---------- Base / Layout ---------- */
+* { box-sizing: border-box; }
+html,body { height: 100%; }
 body {
   font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #f0fdf4; /* pastel green */
   color: var(--text-color);
-  min-height: 100vh;
   margin: 0;
   padding: 0;
+  -webkit-font-feature-settings: "liga" 0;
 }
 
 /* App container */
 .App {
-  max-width: 960px;
-  margin: 40px auto;
-  padding: 30px;
+  max-width: 980px;
+  margin: 36px auto;
+  padding: 28px;
   background: var(--card-color);
   border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(136,152,170,0.12);
-  border: 1px solid #e9ecef;
+  box-shadow: var(--shadow-strong);
+  border: 1px solid #eef3f7;
 }
 
-/* nav */
-nav {
+/* ---------- Top nav / page toggle (Start / History) ---------- */
+.top-nav {
   display: flex;
   justify-content: center;
-  border-bottom: 1px solid #e9ecef;
-  padding-bottom: 15px;
-  margin-bottom: 25px;
+  margin-bottom: 22px;
+  gap: 12px;
 }
 
-/* prediction container */
+/* pill button */
+.top-nav a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  border-radius: 18px;
+  text-decoration: none;
+  font-weight: 600;
+  color: #394956;
+  background: transparent;
+  border: 1px solid transparent;
+  transition: all .18s ease;
+}
+
+.top-nav a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+
+.top-nav a.active {
+  background: linear-gradient(180deg, #2F80ED 0%, #1A6ED9 100%);
+  color: white;
+  box-shadow: 0 8px 24px rgba(47,128,237,0.18);
+  border: none;
+}
+
+/* subtle underline divider under the nav */
+.nav-divider {
+  height: 1px;
+  background: linear-gradient(90deg, rgba(0,0,0,0.03), rgba(0,0,0,0.02));
+  margin: 18px 0 26px 0;
+  border-radius: 2px;
+}
+
+/* ---------- Page headers ---------- */
+.page-header {
+  text-align: center;
+  margin-bottom: 18px;
+}
+.page-header h1 {
+  margin: 0;
+  font-size: 1rem;
+  color: #5f3ea5;
+  text-decoration: underline;
+  text-decoration-color: rgba(95,62,165,0.08);
+  padding-bottom: 6px;
+}
+
+/* ---------- Prediction form container ---------- */
 .prediction-form-container {
   max-width: 920px;
   margin: 0 auto;
@@ -57,123 +105,283 @@ nav {
   padding-bottom: 12px;
 }
 
-/* ---------- Live-like manual card ---------- */
-.manual-card.live-like-card {
+/* ---------- LiveFeed & Manual cards ---------- */
+.card {
   background: var(--card-color);
-  border-radius: 14px;
-  padding: 20px;
+  border-radius: 12px;
+  padding: 18px;
   border: 1px solid var(--border-color);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.03);
-  margin-bottom: 28px;
+  box-shadow: var(--shadow-soft);
 }
 
-/* Manual title */
+/* make LiveFeed and manual visually separated with breathing space */
+.live-card-wrapper {
+  margin-bottom: 22px;
+}
+
+/* header for each card (title + small status) */
+.card .card-header {
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.card .card-header h2 {
+  margin: 0;
+  color: var(--primary-color);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+.status-pill {
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 10px;
+  border-radius: 12px;
+  font-weight:600;
+  font-size:0.9rem;
+  color:#fff;
+  background:#6b7280;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+}
+.status-pill.online {
+  background: linear-gradient(180deg,#27AE60,#199247);
+}
+.status-pill.offline {
+  background: #6b7280;
+}
+
+/* ---------- Live metrics grid (keeps previous look) ---------- */
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-bottom: 14px;
+}
+@media (max-width: 1100px) { .metricsGrid { grid-template-columns: repeat(3,1fr); } }
+@media (max-width: 720px) { .metricsGrid { grid-template-columns: repeat(2,1fr); } }
+
+/* metric tile (LiveFeed style) */
+.metric {
+  background: var(--surface-color);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  padding: 14px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.04);
+  min-height: 72px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+.metricLabel { color: var(--subtle-text-color); font-weight:600; margin-bottom:6px; display:flex; align-items:center; gap:8px; }
+.metricValue { color: var(--text-color); font-weight:700; font-size:1rem; }
+
+/* toolbar under metrics */
+.toolbar {
+  display:flex;
+  gap:10px;
+  align-items:center;
+  margin: 10px 0 16px;
+}
+.btn {
+  border: 1px solid #e6eef5;
+  background: #fff;
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight:600;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.03);
+}
+.btnPrimary {
+  background: linear-gradient(180deg,#2F80ED,#1A6ED9);
+  color: white;
+  border: none;
+}
+.btnSecondary {
+  background: #F5F7FB;
+  color: #243B53;
+}
+
+/* log at bottom */
+.log {
+  margin-top: 12px;
+  border-radius: 10px;
+  background: #F8FAFC;
+  padding: 16px;
+  min-height: 56px;
+  border: 1px solid #EEF6FB;
+}
+
+/* ---------- Manual Input Card (matches LiveFeed visuals) ---------- */
+.manual-card {
+  margin-top: 18px;
+  background: var(--card-color);
+  border-radius: 14px;
+  padding: 18px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-soft);
+}
+
+/* manual title */
 .manual-title {
   font-size: 1.35rem;
   color: var(--primary-color);
-  font-weight: 600;
+  font-weight: 700;
   margin: 0 0 14px 0;
 }
 
-/* Grid for the metric-style tiles */
+/* manual metric-like grid (same visual style as live) */
+/* FIXED: use 4 columns so tiles align cleanly */
 .manual-metrics-grid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr); /* compact, like LiveFeed */
-  gap: 12px;
-  align-items: start;
-  margin-bottom: 16px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 10px;
 }
+@media (max-width: 1100px) { .manual-metrics-grid { grid-template-columns: repeat(3,1fr); } }
+@media (max-width: 720px) { .manual-metrics-grid { grid-template-columns: repeat(2,1fr); } }
 
-/* Responsive fallbacks */
-@media (max-width: 1100px) {
-  .manual-metrics-grid { grid-template-columns: repeat(3, 1fr); }
-}
-@media (max-width: 720px) {
-  .manual-metrics-grid { grid-template-columns: 1fr 1fr; }
-}
-
-/* each input tile imitates LiveFeed metric card exactly */
+/* each manual input tile uses same tokens as LiveFeed tiles */
 .input-tile {
-  background: var(--surface-color);      /* MATCH: same pale bluish surface as LiveFeed */
-  border-radius: 12px;                   /* rounded */
-  border: 1px solid var(--border-color); /* same border token */
+  background: var(--surface-color);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
   padding: 12px 14px;
-  /* VERY subtle shadow like live tiles (low intensity) */
-  box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.04);
   min-height: 72px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
 }
-
-/* label inside tile */
-.tile-label {
-  color: var(--subtle-text-color);
-  font-size: 0.92rem;
-  margin-bottom: 6px;
-  font-weight: 600;
-}
-
-/* input inside tile styled as the metric value area */
+.tile-label { color: var(--subtle-text-color); font-weight:600; margin-bottom:6px; }
 .tile-input {
-  border: none;
-  outline: none;
-  background: transparent;
-  font-size: 1rem;
-  color: var(--text-color);
+  border:none; outline:none; background:transparent; font-size:1rem; color:var(--text-color);
   width: 100%;
-  padding: 6px 0;
-  box-sizing: border-box;
 }
 
-/* placeholder faint like metric dashes */
-.tile-input::placeholder {
-  color: rgba(36,59,83,0.30);
+/* style an actual input element placed inside a tile for clarity */
+.input-tile input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #e6eef5;
+  background: #ffffff;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+  font-size: 0.98rem;
+  color: var(--text-color);
 }
 
-/* actions area */
-.manual-actions {
-  margin-top: 8px;
-  display: flex;
-  justify-content: center;
-}
+/* makes placeholder look subtle and left aligned */
+.input-tile input::placeholder { color: #9aa6b3; text-align:left; }
 
-/* Predict button */
+/* manual actions */
+.manual-actions { margin-top: 16px; display:flex; justify-content:center; }
 .predict-button {
-  background: #007aff;
-  color: white;
-  border: none;
+  background: var(--accent);
+  color: #fff;
   padding: 12px 26px;
   border-radius: 10px;
-  font-size: 1.05rem;
-  font-weight: 600;
-  cursor: pointer;
-  box-shadow: 0 8px 24px rgba(0, 122, 255, 0.15);
+  border:none;
+  font-weight:700;
   width: 100%;
   max-width: 420px;
+  box-shadow: 0 8px 24px rgba(0,122,255,0.14);
 }
-.predict-button:hover { transform: translateY(-2px); background: #0056b3; }
 
-/* --- Spinner / Error / Results unchanged (kept concise) --- */
-.spinner-container {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(255,255,255,0.7);
-  backdrop-filter: blur(5px);
-  display:flex; align-items:center; justify-content:center;
-  border-radius:12px; z-index:10;
+/* ---------- History Page Styles (improved readability) ---------- */
+.history-container {
+  padding: 4px 6px 24px 6px;
 }
-.loading-spinner {
-  width:50px;height:50px;border:5px solid #f3f3f3;border-top:5px solid #007aff;border-radius:50%;animation:spin 1s linear infinite;
+.history-header {
+  margin-bottom: 18px;
 }
-@keyframes spin { 0%{transform:rotate(0deg);}100%{transform:rotate(360deg);} }
+.history-header h2 {
+  margin: 0 0 6px 0;
+  font-size: 1.4rem;
+  color: #1f3b59;
+}
+.history-sub {
+  color: var(--subtle-text-color);
+  font-size: 0.95rem;
+  margin-bottom: 12px;
+}
 
-.error-box {
-  color:#b33e3a;background-color:#fdeded;border:1px solid #f8c6c5;border-radius:8px;padding:15px;margin-top:20px;text-align:left;
+/* history list - each record is a wide card */
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
 }
-.error-box pre { white-space:pre-wrap; word-break:break-word; color:#c9514c; }
 
-/* small responsive tweak */
-@media (max-width: 420px) {
-  .predict-button { padding: 12px; font-size: 1rem; }
+/* single history card */
+.history-card {
+  padding: 18px;
+  border-radius: 12px;
+  border: 1px solid #eef3f7;
+  background: #ffffff;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.03);
+  display: grid;
+  grid-template-columns: 1fr 420px; /* details left, image right */
+  gap: 18px;
+  align-items: start;
+}
+@media (max-width: 1000px) {
+  .history-card { grid-template-columns: 1fr; }
+}
+
+/* details column */
+.history-card-details h3 {
+  margin: 0 0 8px 0;
+  color: var(--primary-color);
+  font-size:1.05rem;
+}
+.history-card-details p {
+  margin: 6px 0;
+  color: var(--text-color);
+  line-height: 1.35;
+}
+.history-card-details strong { color:#0f2640; }
+
+/* small metadata row */
+.history-meta {
+  margin-top: 8px;
+  color: var(--subtle-text-color);
+  font-size: .9rem;
+}
+
+/* map column */
+.history-card-map {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #eef3f7;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#f9fbff;
+}
+.history-card-map img { display:block; width:100%; height:auto; }
+
+/* history image caption */
+.history-caption {
+  font-size: .9rem;
+  color: var(--subtle-text-color);
+  margin-top:8px;
+}
+
+/* ---------- Result and misc (retain earlier rules) ---------- */
+.result-container { margin-top: 30px; padding: 25px; background: #f9f9f9; border-radius: 12px; border:1px solid #e9ecef; }
+.result-header { text-align:center; color:var(--accent); font-size:1.2rem; margin-bottom:10px; }
+.result-canvas { height:250px; width:100%; background:#e9ecef; border-radius:8px; margin-bottom:12px; }
+
+/* spinner and error (kept) */
+.spinner-container { position:absolute; top:0; left:0; right:0; bottom:0; background:rgba(255,255,255,0.72); backdrop-filter: blur(4px); display:flex; align-items:center; justify-content:center; border-radius:12px; z-index:10; }
+.loading-spinner { width:48px;height:48px;border:5px solid #f3f3f3;border-top:5px solid var(--accent);border-radius:50%;animation:spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.error-box { color:#b33e3a; background:#fdeded; border:1px solid #f8c6c5; border-radius:8px; padding:14px; margin-top:18px; }
+
+/* small responsive adjustments */
+@media (max-width: 520px) {
+  .metricsGrid, .manual-metrics-grid { grid-template-columns: 1fr 1fr; gap:10px; }
+  .App { margin: 20px 12px; padding: 18px; }
+  .top-nav a { padding: 8px 10px; }
 }

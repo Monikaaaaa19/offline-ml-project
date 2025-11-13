@@ -468,5 +468,180 @@
         },
         "id": "pred_10",
         "saved_at": "2025-11-12T22:13:34.787027"
+    },
+    {
+        "predicted_crop": "coffee",
+        "confidence": 0.5541830517153098,
+        "fertilizer_recommendation": "Normal Fertilizers Needed",
+        "disease_alerts": [
+            "Coffee Leaf Rust",
+            "Berry Disease"
+        ],
+        "area_acres": 1.3880626919634325,
+        "warnings": [],
+        "received_data": {
+            "N": 76.0,
+            "P": 23.0,
+            "K": 51.0,
+            "soil_ph": 5.65,
+            "avg_temp_c": 2.2,
+            "soil_moisture_pct": 61.0,
+            "annual_rainfall_mm": 2293.0,
+            "latitude": 24.40847585,
+            "longitude": 92.83348399,
+            "device_id": null,
+            "timestamp": null,
+            "place_name": "User Form Input",
+            "polygon": [
+                {
+                    "lat": 24.40847585,
+                    "lng": 92.83348399
+                },
+                {
+                    "lat": 24.40947585,
+                    "lng": 92.83448399000001
+                },
+                {
+                    "lat": 24.40847585,
+                    "lng": 92.83448399000001
+                }
+            ],
+            "state": "Assam"
+        },
+        "source": "manual",
+        "id": "pred_11",
+        "saved_at": "2025-11-13T10:25:20.666085"
+    },
+    {
+        "predicted_crop": "rice",
+        "confidence": 0.9248832922552327,
+        "fertilizer_recommendation": "Normal Fertilizers Needed",
+        "disease_alerts": [
+            "Brown Spot",
+            "Sheath Blight",
+            "Rice Blast"
+        ],
+        "area_acres": 1.5190123739589494,
+        "warnings": [],
+        "received_data": {
+            "N": 94.0,
+            "P": 46.0,
+            "K": 45.0,
+            "soil_ph": 5.98,
+            "avg_temp_c": 27.1,
+            "soil_moisture_pct": 48.0,
+            "annual_rainfall_mm": 2084.0,
+            "latitude": 2.83007267,
+            "longitude": 85.44883993,
+            "device_id": null,
+            "timestamp": null,
+            "place_name": "User Form Input",
+            "polygon": [
+                {
+                    "lat": 2.83007267,
+                    "lng": 85.44883993
+                },
+                {
+                    "lat": 2.8310726699999997,
+                    "lng": 85.44983993000001
+                },
+                {
+                    "lat": 2.83007267,
+                    "lng": 85.44983993000001
+                }
+            ],
+            "state": "Outside Boundaries"
+        },
+        "source": "manual",
+        "id": "pred_12",
+        "saved_at": "2025-11-13T10:27:43.004820"
+    },
+    {
+        "predicted_crop": "rice",
+        "confidence": 0.9248832922552327,
+        "fertilizer_recommendation": "Normal Fertilizers Needed",
+        "disease_alerts": [
+            "Brown Spot",
+            "Sheath Blight",
+            "Rice Blast"
+        ],
+        "area_acres": 1.372359050374613,
+        "warnings": [],
+        "received_data": {
+            "N": 94.0,
+            "P": 46.0,
+            "K": 45.0,
+            "soil_ph": 5.98,
+            "avg_temp_c": 27.1,
+            "soil_moisture_pct": 48.0,
+            "annual_rainfall_mm": 2084.0,
+            "latitude": 25.83007267,
+            "longitude": 85.44883993,
+            "device_id": null,
+            "timestamp": null,
+            "place_name": "User Form Input",
+            "polygon": [
+                {
+                    "lat": 25.83007267,
+                    "lng": 85.44883993
+                },
+                {
+                    "lat": 25.83107267,
+                    "lng": 85.44983993000001
+                },
+                {
+                    "lat": 25.83007267,
+                    "lng": 85.44983993000001
+                }
+            ],
+            "state": "Bihar"
+        },
+        "source": "manual",
+        "id": "pred_13",
+        "saved_at": "2025-11-13T10:28:10.497207"
+    },
+    {
+        "predicted_crop": "rice",
+        "confidence": 0.7466869559651819,
+        "fertilizer_recommendation": "Normal Fertilizers Needed",
+        "disease_alerts": [
+            "Brown Spot",
+            "Sheath Blight",
+            "Rice Blast"
+        ],
+        "area_acres": 1.4633711601082144,
+        "warnings": [],
+        "received_data": {
+            "N": 97.0,
+            "P": 29.0,
+            "K": 42.0,
+            "soil_ph": 6.36,
+            "avg_temp_c": 21.4,
+            "soil_moisture_pct": 41.0,
+            "annual_rainfall_mm": 2166.0,
+            "latitude": 16.00292056,
+            "longitude": 80.02419949,
+            "device_id": null,
+            "timestamp": null,
+            "place_name": "User Form Input",
+            "polygon": [
+                {
+                    "lat": 16.00292056,
+                    "lng": 80.02419949
+                },
+                {
+                    "lat": 16.00392056,
+                    "lng": 80.02519949
+                },
+                {
+                    "lat": 16.00292056,
+                    "lng": 80.02519949
+                }
+            ],
+            "state": "Andhra Pradesh"
+        },
+        "source": "manual",
+        "id": "pred_14",
+        "saved_at": "2025-11-13T11:18:15.695130"
     }
 ]

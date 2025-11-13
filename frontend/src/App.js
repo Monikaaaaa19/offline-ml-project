@@ -9,7 +9,6 @@ import "./App.css"; // Don't forget to import your CSS!
 
 function App() {
   // --- We move ALL state from StartPrediction up to App ---
-  // This ensures the data is NOT lost when you change tabs
   const [N, setN] = useState("");
   const [P, setP] = useState("");
   const [K, setK] = useState("");
@@ -25,8 +24,6 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   // --------------------------------------------------------
 
-  // We package all the state and setters into a single object
-  // to pass them down as "props".
   const startProps = {
     N,
     setN,
@@ -57,27 +54,21 @@ function App() {
   return (
     <BrowserRouter>
       <div className="App">
-        {/* Pill navigation (Option A) */}
-        <nav
-          className="pill-nav"
-          role="navigation"
-          aria-label="Main navigation"
-        >
+        {/* Top nav uses pill buttons styled in App.css */}
+        <div className="top-nav" role="navigation" aria-label="Main navigation">
           <NavLink
             to="/"
-            end
-            className={({ isActive }) => `pill-btn ${isActive ? "active" : ""}`}
+            className={({ isActive }) => (isActive ? "active" : "")}
           >
             Start
           </NavLink>
-
           <NavLink
             to="/history"
-            className={({ isActive }) => `pill-btn ${isActive ? "active" : ""}`}
+            className={({ isActive }) => (isActive ? "active" : "")}
           >
             History
           </NavLink>
-        </nav>
+        </div>
 
         <div className="nav-divider" />
 
