@@ -1,18 +1,30 @@
-
 # Python
-venv/
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+
+# Python virtual env
+venv/
+env/
+.env
 
 # Node
-frontend/node_modules/
-frontend/build/
-frontend/.env
-npm-debug.log
+node_modules/
+build/
+dist/
 
-# macOS
+# Models & DB (do NOT push)
+models/
+db/
+*.joblib
+*.pkl
+*.h5
+
+# Logs
+*.log
+
+# OS / Editor files
 .DS_Store
-
-# VS Code
 .vscode/
-
+.idea/
